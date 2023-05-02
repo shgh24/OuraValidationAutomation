@@ -17,10 +17,7 @@ client = gspread.authorize(creds)
 
 
 # Replace this with your Google Sheet key
-# Replace this with your Google Sheet key
-with open('/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/sheet_key.txt') as f:
-    contents = f.readlines()
-sheet_key = contents[0]
+sheet_key = '1fS9kNDh1DlJiyphvD_ZbpSERU282xsUPJmjx4iUtm4I'
 sheet_name = 'Devices/Session Tracking'
 
 # Read the data from the Google Sheet

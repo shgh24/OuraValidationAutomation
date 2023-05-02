@@ -90,9 +90,9 @@ for files in filelist:
 
     # Slice the DataFrame based on lightOff and lightOn
     Diff_start = int(
-        (df_Oura.iloc[0]["timestamp"] - lightOff).total_seconds()/30)
+        (df_Oura.iloc[0]["timestamp"] - lightOff).total_seconds()/30)-1
     Diff_end = int(
-        ((lightON-df_Oura.iloc[-1]["timestamp"]).total_seconds()+30)/30)
+        ((lightON-df_Oura.iloc[-1]["timestamp"]).total_seconds())/30)-1
 
     df_sliced = df_psg
     if Diff_start >= 0:
@@ -106,7 +106,7 @@ for files in filelist:
         # Calculate the number of zero value rows to add
         time_diff = lightOff-df_Oura.iloc[0]["timestamp"]
 
-        num_rows = time_diff.total_seconds() / 60-.5
+        num_rows = (time_diff.total_seconds() / 60)+.5
 
         # Create a DataFrame with zero value rows
         zero_df_LOFF = pd.DataFrame({"timestamp": pd.date_range(
@@ -114,19 +114,20 @@ for files in filelist:
 
         # Concatenate the zero_df with df_sliced
         df_sliced = pd.concat(
-            [zero_df_LOFF["predicted"], df_sliced.iloc[:, 0]], ignore_index=True)
+            [zero_df_LOFF["predicted"], df_sliced], ignore_index=True)
 
     # If the end time is earlier than lightON, add a row with Sleep Stage = 0
     # if (df_sliced.iloc[-1][["timestamp"]] < lightON-pd.Timedelta(minutes=.5)).item():
     if (df_Oura.iloc[-1][["timestamp"]] > lightON).item():
         time_diff_LONN = df_Oura.iloc[-1]["timestamp"]-lightON
-        num_rows_LONN = time_diff_LONN.total_seconds() / 60 - .5
+        num_rows_LONN = (time_diff_LONN.total_seconds() / 60)+.5
 
         # Create a DataFrame with zero value rows
         zero_df_LON = pd.DataFrame({"timestamp": pd.date_range(
             df_Oura.iloc[-1]["timestamp"]+pd.Timedelta(minutes=.5), periods=num_rows_LONN*2, freq="30S"), "predicted": 0})
         df_sliced = pd.concat(
-            [df_sliced.iloc[:, 0], zero_df_LON['predicted']], ignore_index=True)
+            [df_sliced, zero_df_LON['predicted']], ignore_index=True)
+
     # Mapp Oura
 
     OuraMapping = {
@@ -138,8 +139,11 @@ for files in filelist:
     }
     df_Oura.loc[:, 'staging'] = df_Oura['predicted'].map(OuraMapping)
     # df_Oura.loc["predicted"] = df_Oura.loc["predicted"].map(OuraMapping)
-    print(f'{subject} difference length of Oura-psg is {len(df_Oura)-len(df_sliced)}')
+    print(
+        f'{subject} - {participant[-1]} hand difference length of Oura-psg is {len(df_Oura)-len(df_sliced)}')
 
     # /Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Oura3
-    # df_sliced.iloc[:, 0].to_csv(files.replace(
-    #     '_nssa.csv', '_nssa_clean.csv').replace('S3_', 'S3').replace('NIGHT', 'N').replace('OURA3_Raw', 'Sleep_Staging/saving_path'), index=False, header=False)
+    df_sliced.iloc[:, 0].to_csv(files.replace(
+        '_nssa.csv', '_nssa_clean.csv').replace('S3_', 'S3').replace('NIGHT', 'N').replace('OURA3_Raw', 'Sleep_Staging/PSG_Cut2OuraTiming'), index=False, header=False)
+    df_Oura.loc[:, 'staging'].to_csv(files.replace(
+        '_nssa.csv', '_nssa_clean.csv').replace('S3_', 'S3').replace('NIGHT', 'N').replace('OURA3_Raw', 'Sleep_Staging/OURA_Cut2OuraTiming'), index=False, header=False)

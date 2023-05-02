@@ -10,12 +10,14 @@ import shutil
 # Load credentials and connect to Google Sheets API
 scope = ['https://www.googleapis.com/auth/spreadsheets']
 creds = service_account.Credentials.from_service_account_file(
-    'api-access-381407-51bd2bb2d008.json', scopes=scope)
+    '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/GoogleSheet_api_key/api-access-381407-51bd2bb2d008.json', scopes=scope)
 client = gspread.authorize(creds)
 
 
 # Replace this with your Google Sheet key
-sheet_key = '1fS9kNDh1DlJiyphvD_ZbpSERU282xsUPJmjx4iUtm4I'
+with open('/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/GoogleSheet_api_key/sheet_key.txt') as f:
+    contents = f.readlines()
+sheet_key = contents[0]
 sheet_name = 'Devices/Session Tracking'
 
 # Read the data from the Google Sheet

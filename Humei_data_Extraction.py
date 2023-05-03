@@ -37,6 +37,7 @@ dir_path_folders = os.listdir(dir_path)
 
 # Humei_finaldata = pd.DataFrame()
 Humei_cleaned_list = []
+Humei_cleaned_list_LOn_LOff = []
 
 for path in glob.glob(f'{dir_path}/*/SLEEP*'):
     Humei_cleaned = pd.DataFrame()
@@ -80,10 +81,59 @@ for path in glob.glob(f'{dir_path}/*/SLEEP*'):
             Humei_cleaned.loc['Night'] = int(match["Night"].iloc[0])
             Humei_cleaned_list.append(Humei_cleaned)
 
+            # get the lIghts on and Lights of the PSG and check if Humei data recorded between Lights On and Lights Off
+            lightOff = match.iloc[0]['Session start local time']
+            lightON = match.iloc[0]['Session end local time']
 
-Humei_finaldata = Humei_cleaned_list
+            lightOff = pd.Timestamp(lightOff)
+            base_date = pd.Timestamp(match.iloc[0]['Session end date'])
+            if lightOff.hour > 19:
+                lightOff_day = base_date - pd.Timedelta(days=1)
+                lightOff = lightOff.replace(year=lightOff_day.year,
+                                            month=lightOff_day.month, day=lightOff_day.day).tz_localize(pytz.timezone('Asia/Shanghai'))
+            else:
+                lightOff = lightOff.replace(year=base_date.year,
+                                            month=base_date.month, day=base_date.day).tz_localize(pytz.timezone('Asia/Shanghai'))
+            lightON = pd.Timestamp(lightON).replace(
+                year=base_date.year, month=base_date.month, day=base_date.day).tz_localize(pytz.timezone('Asia/Shanghai'))
+
+            TIB = pd.Timestamp(
+                row['stop'])-pd.Timestamp(row['start'])
+            TIB_s = pd.Series({'TIB': TIB.total_seconds()/60})
+            # Humei_cleaned = pd.concat([Humei_cleaned, TIB_s], axis=1)
+            Humei_cleaned = pd.concat([TIB_s, Humei_cleaned])
+
+            if (pd.Timestamp(row['start']) >= lightOff and pd.Timestamp(row['stop']) <= lightON):
+
+                Humei_cleaned_list_LOn_LOff.append(Humei_cleaned)
+
+
+df_Humei_LON_LOff = pd.DataFrame(Humei_cleaned_list_LOn_LOff)
+df_Humei_LON_LOff = df_Humei_LON_LOff.reset_index(drop=True)
+
+df_Humei_LON_LOff = df_Humei_LON_LOff[(df_Humei_LON_LOff['REMTime'] != 0) & (
+    df_Humei_LON_LOff['shallowSleepTime'] != 0) & (df_Humei_LON_LOff['deepSleepTime'] != 0)]
+
+cols = list(df_Humei_LON_LOff)
+cols = cols[-2:] + cols[0:-2]
+df_Humei_LON_LOff = df_Humei_LON_LOff[cols]
+df_Humei_LON_LOff.to_csv(os.path.join(
+    dir_path, 'Humei_Data_LihtsOn_lightsOff_v1.csv'), index=False)
+
+
+# the whole dataset that does not exclude any recorded data
 df_humei = pd.DataFrame(Humei_cleaned_list)
-# df_humei['index'] = np.arange(start=0, stop=len(Humei_cleaned_list), step=1)
-
 df_humei = df_humei.reset_index(drop=True)
+df_humei = df_humei[(df_humei['REMTime'] != 0) & (
+    df_humei['shallowSleepTime'] != 0) & (df_humei['deepSleepTime'] != 0)]
+cols = list(df_humei)
+cols = cols[-2:] + cols[0:-2]
+df_humei = df_humei[cols]
+df_humei.to_csv(os.path.join(
+    dir_path, 'Humei_Data_Allincluded_v1.csv'), index=False)
+
+# cleaning Humei data before processing it
+# we keep the data points that recoding ON and off happens inside the Lights On and Off
+
+
 print('done with data')

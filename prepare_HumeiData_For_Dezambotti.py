@@ -30,15 +30,30 @@ for index, row in Humei_df.iterrows():
                       'Light_ref', 'Light_device',	'Deep_ref', 'Deep_device',	'REM_ref',	'REM_device'])
 
     if len(matching_files):
-        count += 1
+        # count += 1
         psg = pd.read_csv(matching_files[0])
 
-        Deep_ref = psg.value_counts()[3]
-        REM_ref = psg.value_counts()[5]
-        Light_ref = psg.value_counts()[1]
-        WASO_ref = psg.value_counts()[0]
-        TST_ref = Deep_ref+REM_ref+Light_ref+WASO_ref
-        TIB = len(psg)
+        SOL_ref = 0
+        for i, rows in psg.iterrows():
+            if rows[0] == 0:
+                SOL_ref += 1
+            else:
+                break
+
+# psg.loc[psg != 0].index[-1]        last_nonzero_index = psg.loc[psg != 0].index[-1]
+        X = psg.loc[psg.iloc[:, 0] != 0].index
+        Sleepend = X[-1]
+        # SOL_ref *= epochLenght/60
+
+        Deep_ref = psg[SOL_ref:].value_counts()[3]/2
+        REM_ref = psg[SOL_ref:].value_counts()[5]/2
+        Light_ref = (psg[SOL_ref:].value_counts()[1]/2) + \
+            (psg[SOL_ref:].value_counts()[2]/2)
+        WASO_ref = psg[SOL_ref:].value_counts()[0]/2
+
+        TST_ref = Deep_ref+REM_ref+Light_ref
+        # +WASO_ref
+        TIB = len(psg)/2
 
         sm_list = [row['Subject'], TIB, TST_ref, row['TIB'],
                    WASO_ref, row['wakeTime'],

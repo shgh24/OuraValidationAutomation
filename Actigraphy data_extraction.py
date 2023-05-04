@@ -7,6 +7,7 @@ file = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/
 
 
 dir_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Actigraph/CSV"
+saving_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Actigraphy/Raw'
 
 # folders = next(os.walk(dir_path))[1]
 folders = glob.glob(dir_path+'/NUS*/NUS*.csv')
@@ -15,8 +16,8 @@ folders = glob.glob(dir_path+'/NUS*/NUS*.csv')
 for folder in folders:
 
     # extract the recording ID
-    parts = folder.split("_")
-    id_str = parts[0]
+    parts = folder.split("/")
+    id_str = parts[-1][0:7]
 
     # match the recording ID with subject ID
     # match_id = df[df["Recording ID"].str.contains(
@@ -51,23 +52,26 @@ for folder in folders:
 
     # Add the first and last line numbers to the list
     sleep_periods_indices = sleep_periods_indices
-    sleep_periods_indices = [0] + sleep_periods_indices + [len(lines)]
+    sleep_periods_indices = sleep_periods_indices + [len(lines)]
+    # sleep_periods_indices = [0] + sleep_periods_indices + [len(lines)]
     # Split the list of lines into separate lists for each "Sleep Period"
-    sleep_periods = []
+    # sleep_periods = []
+
     for i in range(len(sleep_periods_indices) - 1):
-        start_index = sleep_periods_indices[i]
-        end_index = sleep_periods_indices[i + 1]
+
+        start_index = sleep_periods_indices[i]+1
+        end_index = sleep_periods_indices[i+1]-1
         sleep_period = lines[start_index:end_index]
-        sleep_periods.append(sleep_period)
+        date_recorded = sleep_period[1][0].replace('/', '-')
+        file_name = f'{saving_path }/{id_str}_{date_recorded}_N{i+1}_Actigraphy.csv'
+        df_sleep = pd.DataFrame(sleep_period)
+        # df_sleep.to_csv(file_name, index=False, header=False)
+        epoch = df_sleep.iloc[1:, -1]
+        epoch.replace({'W': 0, 'S': 1}, inplace=True)
 
-    if match_id:
-        dest_dir = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Dreem_Raw/"
+        newdf = epoch.loc[epoch.index.repeat(2)].reset_index(drop=True)
 
-        current_folder = os.path.join(dir_path, folder)
-        for hypno_file in glob.glob(os.path.join(current_folder, "*.txt")):
-            # Scldreem_s01_2023-03-09T23-30-56[+0800]_hypnogram.txt
-            parts = folder.split("_")
-            file_date = parts[0]
-            new_name = f'{match_id[0]}_{file_date}.txt'
+        newdf.to_csv(file_name.replace('Raw', 'epoched'),
+                     index=False, header=False)
 
-            shutil.copy(hypno_file, os.path.join(dest_dir, new_name))
+    print('Fin')

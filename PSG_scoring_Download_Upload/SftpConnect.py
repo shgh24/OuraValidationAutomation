@@ -1,3 +1,4 @@
+from clean_siesta_module import clean_sleep_staging
 import pysftp
 import os
 import glob
@@ -71,3 +72,8 @@ for file in Siesta_Download_files:
 print("Finished Downloading :)")
 
 sftp.close()
+
+# Clean the Siesta data download by clean_siesta_module
+if __name__ == '__main__':
+    source_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/SiestaScored'
+    clean_sleep_staging(source_path)

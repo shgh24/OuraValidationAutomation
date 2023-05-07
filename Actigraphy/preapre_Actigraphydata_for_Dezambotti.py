@@ -21,7 +21,17 @@ import os as os
 # For 3010 and 3020 subject was already awake so we can append wake to end of psg record.
 # For 3030 subject was still sleeping so if we are doing any wake time estimation detection, nd to skip this.
 add_wake = ['3010_N1', '3020_N2']
-exlusion = ['3030', '3022_N2']
+exlusion = ['3022_N2']
+
+
+# Recording ID
+# NUS3010_N1  
+# NUS3020_N2
+# NUS3030_N1  
+# NUS3101_N2  1072  1030
+# NUS3050_N1  939   940
+# NUS3050_N2  1076  1078
+# NUS3040_N1  935   936
 
 
 staging_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging"

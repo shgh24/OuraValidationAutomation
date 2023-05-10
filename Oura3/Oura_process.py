@@ -32,19 +32,9 @@ df = pd.DataFrame(data)
 
 data_dir = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/OURA3_Raw'
 filelist = glob.glob(data_dir+'/NUS*_nssa.csv')
-# filelist = glob.glob(data_dir+'/NUS3_008_NIGHT02_R_sleepstage_nssa*')
-
-# Debugin
-# dataframes = []
-# for file in filelist:
-#     df = pd.read_csv(file)
-#     dataframes.append(df)
-
-# # Concatenate the DataFrames into a single DataFrame
-# data = pd.concat(dataframes, axis=0, ignore_index=True)
 
 # Now you can test your for loop using the `data` DataFrame
-# for i, row in data.iterrows():
+
 
 for files in filelist:
 

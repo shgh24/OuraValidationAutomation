@@ -25,9 +25,9 @@ exlusion = ['3022_N2']
 
 
 # Recording ID
-# NUS3010_N1  
+# NUS3010_N1
 # NUS3020_N2
-# NUS3030_N1  
+# NUS3030_N1
 # NUS3101_N2  1072  1030
 # NUS3050_N1  939   940
 # NUS3050_N2  1076  1078
@@ -35,84 +35,102 @@ exlusion = ['3022_N2']
 
 
 staging_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging"
-Saving_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB/Data"
+Saving_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Data"
 # FB_data="/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Fitbit/NUS3001_N1.csv"
-
+acti = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Actigraphy/epoched/'
+# 'NUS3001_2-3-2023_N1_Actigraphy.csv'
+psg = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Consensus_score/'
+# NUS3001_N1_030323_sleepstage_consensus.csv'
 
 nights = ["N1", "N2"]
 
 
+outliers_cut_end = ['NUS3010_N1', 'NUS3020_N2']
+outlier_cut_start = ['NUS3043_N1']
+
+
 for Night in nights:
 
-    Consesnus_Scores = glob.glob(os.path.join(
-        staging_file_path, "Consensus_score", f"NUS*{Night}*.csv"))
+    # /Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/SubjectID_N01_L_2023_05_10.csv
+    Night_oura = Night.replace('N', 'N0')
+    subj_list = pd.read_csv(
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/SubjectID_{Night_oura}_L_2023_05_10.csv')
+    # Consesnus_Scores = glob.glob(os.path.join(
+    #     staging_file_path, "Consensus_score", f"NUS*{Night}*.csv"))
 
-    # Oura_sources = glob.glob(os.path.join(
-    #     staging_file_path, "Oura3", f"NUS*{Night}*.csv"))
-
-    # data_lengths = {}
     combined_data_AllDays = pd.DataFrame()
-    for PSG_Scores in Consesnus_Scores:
+    for index, row in subj_list.iterrows():
         # Extract the subject number and night from the file name
-        subject1, night = os.path.splitext(os.path.basename(PSG_Scores))[
-            0].split("_")[0:2]
+        # subject1, night = os.path.splitext(os.path.basename(PSG_Scores))[
+        #     0].split("_")[0:2]
 
         # Find all the files in folder2 that match the subject and night of the current file in folder1
-        FB_data = glob.glob(os.path.join(
-            staging_file_path, "Fitbit", "NUS*.csv"))
-        matching_files = [
-            f for f in FB_data if subject1 in f and night in f]
+        subj = row['subj']
+        acti_file = f'{acti}{subj}*{Night}_Actigraphy.csv'
+        Acti_data = glob.glob(acti_file)
+        psg_file = f'{psg}{subj}_{Night}*sleepstage_consensus.csv'
+        PSG_data = glob.glob(psg_file)
+        # matching_files = [
+        #     f for f in FB_data if subject1 in f and night in f]
 
-        if matching_files:
+        if len(Acti_data) > 0:
 
-            for FB in matching_files:
-                # Read in the data from both files as Pandas dataframes
-                df_PSG = pd.read_csv(PSG_Scores)
-                df_FB = pd.read_csv(FB)
+            # for FB in matching_files:
+            # Read in the data from both files as Pandas dataframes
+            df_PSG = pd.read_csv(PSG_data[0])
+            df_Oura = pd.read_csv(Acti_data[0])
 
-                # print(
-                #     f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_FB)}")
-                data_type = df_FB['0'].unique()
-                # print(
-                #     f"Data type for {subject1}_{night}: {data_type}")
-                if len(data_type) == 4 and abs(len(df_PSG)-len(df_FB)) <= 3:
-                    # Sanity check
-                    # Check if the data lengths are the same
-                    if len(df_PSG) >= len(df_FB):
-                        df_PSG = df_PSG[0:len(df_FB)]
-                    else:
-                        df_FB = df_FB[0:len(df_PSG)]
+            # print(
+            #     f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_FB)}")
+            # data_type = df_FB['0'].unique()
+            # print(
+            #     f"Data type for {subject1}_{night}: {data_type}")
+            if len(df_PSG) >= len(df_Oura):
+                df_PSG = df_PSG[0:len(df_Oura)]
 
-                    df_PSG.replace(2, 1, inplace=True)
+            elif len(df_PSG) < len(df_Oura) and subj in outlier_cut_start:
+                start_ind = len(df_Oura)-len(df_PSG)
+                df_Oura = df_Oura[start_ind:]
+            else:
+                df_Oura = df_Oura[0:len(df_PSG)]
 
-                    # Find the indices of rows with 7 in df_PSG
-                    indices_to_remove = df_PSG[df_PSG == 7].dropna(
-                        how='all').index
+            df_PSG.replace(2, 1, inplace=True)
+            df_PSG.replace(3, 1, inplace=True)
+            df_PSG.replace(5, 1, inplace=True)
+            # df_PSG.replace(3, 1, inplace=True)
 
-                    # Drop the rows with 7 in df_PSG
-                    df_PSG.drop(indices_to_remove, inplace=True)
+            # Find the indices of rows with 7 in df_PSG
+            indices_to_remove = df_PSG[df_PSG == 7].dropna(
+                how='all').index
 
-                    # Drop the respective rows in df_Oura
-                    df_FB.drop(indices_to_remove, inplace=True)
+            # Drop the rows with 7 in df_PSG
+            df_PSG.drop(indices_to_remove, inplace=True)
 
-                    # Reset index for both dataframes
-                    df_PSG.reset_index(drop=True, inplace=True)
-                    df_FB.reset_index(drop=True, inplace=True)
+            # Drop the respective rows in df_Oura
+            df_Oura.drop(indices_to_remove, inplace=True)
 
-                    print(
-                        f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_FB)}")
+            # Reset index for both dataframes
+            df_PSG.reset_index(drop=True, inplace=True)
+            df_Oura.reset_index(drop=True, inplace=True)
 
-                    combined_data = pd.DataFrame(
-                        data=[subject1]*len(df_PSG), columns=['subject'])
+            print(
+                f"Data lengths difference for {subj}_{Night}: {len(df_PSG)-len(df_Oura)}")
 
-                    #epochs = np.arange(len(df_PSG))+1
-                    combined_data['epoch'] = np.arange(len(df_PSG))+1
-                    combined_data['reference'] = df_PSG
-                    combined_data['device'] = df_FB
+            combined_data = pd.DataFrame(
+                data=[subj]*len(df_PSG), columns=['subject'])
 
-                    # combined_data_AllDays = pd.concat(combined_data_AllDays,combined_data)
-                    combined_data_AllDays = pd.concat(
-                        [combined_data_AllDays, combined_data], ignore_index=True)
+            #epochs = np.arange(len(df_PSG))+1
+            combined_data['epoch'] = np.arange(len(df_PSG))+1
+            combined_data['reference'] = df_PSG
+            combined_data['device'] = df_Oura
 
-    # combined_data_AllDays.to_csv(os.path.join(Saving_file_path,
-    #                                           f"combined_data_{Night}.csv"), index=False)
+            # combined_data_AllDays = pd.concat(combined_data_AllDays,combined_data)
+            combined_data_AllDays = pd.concat(
+                [combined_data_AllDays, combined_data], ignore_index=True)
+
+        else:
+            print(f'{subj}_ {Night} No Acti data ')
+
+    combined_data_AllDays.to_csv(os.path.join(Saving_file_path,
+                                              f"combined_data_{Night}.csv"), index=False)
+print('done')

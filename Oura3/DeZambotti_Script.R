@@ -1,6 +1,7 @@
 #source("/Users/cnladmin/Desktop/DeZambottidata/ebe2sleep.R")
-data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data";
-setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3")
+data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/May_10_2023";
+#setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3")
+setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/May_10_2023")
 library(reshape2); library(ggplot2)
 library(boot)
 library(PropCIs)
@@ -17,15 +18,13 @@ fi<-list.files(path = my_path, pattern = "*.R", all.files = FALSE,
 
 for (f in fi) { source(f) }
 
-
-ylim_TST=c(-170,170);xlim_TST=c(220,550)
-ylim_WASO=c(-120,120);xlim_WASO=c(0,120)
+ylim_TST=c(-60,130);xlim_TST=c(290,490)
+ylim_WASO=c(-70,85);xlim_WASO=c(5,125)
 ylim_Deep=c(-70,70);xlim_Deep=c(20,150)
 ylim_Light=c(-200,200);xlim_Light=c(120,360)
 ylim_REM=c(-110,110);xlim_REM=c(10,170)
-ylim_SOL=c(-110,200);xlim_SOL=c(0,125)
-ylim_SE=c(-50,50);xlim_SE=c(50,100)
-
+ylim_SOL=c(-100,70);xlim_SOL=c(0,110)
+ylim_SE=c(-15,25);xlim_SE=c(60,100)
 
 
 
@@ -46,7 +45,9 @@ for (f in fi_data) {
   (sleep.data <- ebe2sleep(data = raw.data, idCol = "subject", RefCol = "reference", deviceCol = "device",
                            epochLenght = 30, staging = TRUE, stages = c(wake = 0, light = 1, deep = 3, REM = 5), digits = 2))
   
-  
+  fi_name <-gsub("combined_data","Individual_Sleep_Measurement" , f)
+  #fi_name  <- "Individual_Bias_Day1_L.csv"
+  write.csv(sleep.data , fi_name)
   
   ############################################################################################################################
   
@@ -101,7 +102,7 @@ for (f in fi_data) {
   
   png(file= plot_name, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("TST_device","TST_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95, xlim=xlim_TST,ylim=ylim_TST)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_TST,xlim=xlim_TST)
   
   print(myplot)
   dev.off()
@@ -109,21 +110,21 @@ for (f in fi_data) {
   plot_name_f<-gsub("TST","SE" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("SE_device","SE_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95,xlim=xlim_SE,ylim=ylim_SE)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_SE,xlim=xlim_SE)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","SOL" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("SOL_device","SOL_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95,xlim=xlim_SOL,ylim=ylim_SOL)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_SOL,xlim=xlim_SOL)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","WASO" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("WASO_device","WASO_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95,xlim=xlim_WASO,ylim=ylim_WASO)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_WASO,xlim=xlim_WASO)
   print(myplot)
   dev.off()
   
@@ -131,21 +132,21 @@ for (f in fi_data) {
   plot_name_f<-gsub("TST","Light" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("Light_device","Light_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95,ylim=ylim_Light,xlim=xlim_Light)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_Light)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","Deep" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("Deep_device","Deep_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95,ylim=ylim_Deep,xlim=xlim_Deep)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_Deep)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","REM" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("REM_device","REM_ref"), logTransf = FALSE,
-                 xaxis="mean", CI.type="classic", CI.level=.95,ylim=ylim_REM,xlim=xlim_REM)
+                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_REM)
   
   print(myplot)
   dev.off()
@@ -237,6 +238,20 @@ for (f in fi_data) {
   #fi_name  <- "Slep-wake-EBE_Day1_L.csv"
   fi_name <-gsub("combined_data","EBE-Sleep-Wake" , f)
   write.csv(Result, fi_name)
+  
+  
+  
+  errorMatrix(data = dic.data, idCol = "subject", RefCol = "reference", deviceCol = "device",
+              staging = FALSE, stages = c(wake = 10, sleep = 5), matrixType = "sum",
+              CI.type = "classic", boot.type = "basic", CI.level = .95, digits = 2)
+  
+  
+ 
+  
+  fi_name <-gsub("combined_data","ErrorMatrix_propertional_SleepWake" , f)
+  write.csv( ERRMTRIX, fi_name)
+  
+  
   
 }
 

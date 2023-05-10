@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-data_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/May_10_2023/Individual_Bias_N02_R_2023_05_10.csv'
+data_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Results/May_10_2023/Individual_Bias_N2.csv'
 
 #data_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/EBE_individual_N01_R.csv'
 
@@ -17,7 +17,7 @@ outliers_bool = zscore.abs() > 2
 outliers = pd.DataFrame()
 # outliers = []
 
-filename = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/outlier_Individual_Bias_N02_R.txt"
+filename = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Results/May_10_2023/outlier_Individual_Bias_N2.txt"
 with open(filename, "a") as f:  # open the file in append mode
 
     for column in outliers_bool.columns:

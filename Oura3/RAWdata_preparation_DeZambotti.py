@@ -16,6 +16,8 @@ import pandas as pd
 import numpy as np
 import glob
 import os as os
+from datetime import datetime
+
 
 # Basically 3010n1, 3020n2 and 3030n1 psg terminated before lights on.
 # For 3010 and 3020 subject was already awake so we can append wake to end of psg record.
@@ -23,11 +25,16 @@ import os as os
 
 
 # These dta points has issues
-# Lights off time was 21: 30pm but online recording of PSG only started at 21: 39pm(exact). Data cut according to epoch sizes(21: 39pm exact start) on online recording. Full data extracted on PSG device(offline recording). Epoch data contains all data. Take not in DOMINO light backup, NUS3043_N2_F contains the full data while NUS3043_N2_O does not.
+# Lights off time was 21: 30pm but online recording of PSG only started at 21: 39pm(exact).
+# Data cut according to epoch sizes(21: 39pm exact start) on online recording. Full data extracted on PSG device(offline recording).
+# Epoch data contains all data. Take not in DOMINO light backup, NUS3043_N2_F contains the full data while NUS3043_N2_O does not.
 
-outliers_add = ['NUS3010_N1', 'NUS3020_N2']
-outlier_cut = ['NUS3043_N1']
+outliers_cut_end = ['NUS3010_N1', 'NUS3020_N2']
+outlier_cut_start = ['NUS3043_N1']
+# outlier_cut_start = ['NUS3015_N1']
+outlier = ['NUS3021_N1', 'NUS3007_N1', 'NUS3001_N2']
 
+today = datetime.now().strftime("%Y_%m_%d")
 
 # NUS3010_N1
 # NUS3020_N2
@@ -65,10 +72,10 @@ with open(filename, "a") as f:  # open the file in append mode
             combined_data_AllDays = pd.DataFrame()
             for PSG_Scores in Consesnus_Scores:
                 # Extract the subject number and night from the file name
-                subject1, night = os.path.splitext(os.path.basename(PSG_Scores))[
+                subject1, night_psg = os.path.splitext(os.path.basename(PSG_Scores))[
                     0].split("_")[0:2]
 
-                night = night.replace("N1", "N01").replace("N2", "N02")
+                night = night_psg.replace("N1", "N01").replace("N2", "N02")
 
                 # Find all the files in folder2 that match the subject and night of the current file in folder1
                 matching_files = [
@@ -80,53 +87,59 @@ with open(filename, "a") as f:  # open the file in append mode
                         # Read in the data from both files as Pandas dataframes
                         df_PSG = pd.read_csv(PSG_Scores)
                         df_Oura = pd.read_csv(Oura)
+                        subject_id = f'{subject1}_{night_psg}'
 
-                        print(
-                            f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_Oura)}")
-                        f.write(
-                            f"Data lengths difference for {subject1}_{night}:  {len(df_PSG)-len(df_Oura)}\n")
+                        # print(
+                        #     f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_Oura)}")
+                        # f.write(
+                        #     f"Data lengths difference for {subject1}_{night}:  {len(df_PSG)-len(df_Oura)}\n")
 
                         # Sanity check
                         # Check if the data lengths are the same
-                        if len(df_PSG) >= len(df_Oura):
-                            df_PSG = df_PSG[0:len(df_Oura)]
-                        else:
-                            df_Oura = df_Oura[0:len(df_PSG)]
+                        if subject_id not in outlier:
+                            if len(df_PSG) >= len(df_Oura):
+                                df_PSG = df_PSG[0:len(df_Oura)]
 
-                        # Replace 2 with 1 in df_PSG
-                        df_PSG.replace(2, 1, inplace=True)
+                            elif len(df_PSG) < len(df_Oura) and subject_id in outlier_cut_start:
+                                start_ind = len(df_Oura)-len(df_PSG)
+                                df_Oura = df_Oura[start_ind:]
+                            else:
+                                df_Oura = df_Oura[0:len(df_PSG)]
 
-                        # Find the indices of rows with 7 in df_PSG
-                        indices_to_remove = df_PSG[df_PSG == 7].dropna(
-                            how='all').index
+                            # Replace 2 with 1 in df_PSG
+                            df_PSG.replace(2, 1, inplace=True)
 
-                        # Drop the rows with 7 in df_PSG
-                        df_PSG.drop(indices_to_remove, inplace=True)
+                            # Find the indices of rows with 7 in df_PSG
+                            indices_to_remove = df_PSG[df_PSG == 7].dropna(
+                                how='all').index
 
-                        # Drop the respective rows in df_Oura
-                        df_Oura.drop(indices_to_remove, inplace=True)
+                            # Drop the rows with 7 in df_PSG
+                            df_PSG.drop(indices_to_remove, inplace=True)
 
-                        # Reset index for both dataframes
-                        df_PSG.reset_index(drop=True, inplace=True)
-                        df_Oura.reset_index(drop=True, inplace=True)
+                            # Drop the respective rows in df_Oura
+                            df_Oura.drop(indices_to_remove, inplace=True)
 
-                        print(
-                            f"Data lengths difference after cleaning for {subject1}_{night}: {len(df_PSG)-len(df_Oura)}")
-            #             print(
-            #                 f"Data lengths difference for {subject1}_{night}: {data_difference}")
-            # # write the current line to the file with a newline character
+                            # Reset index for both dataframes
+                            df_PSG.reset_index(drop=True, inplace=True)
+                            df_Oura.reset_index(drop=True, inplace=True)
 
-                        combined_data = pd.DataFrame(
-                            data=[subject1]*len(df_PSG), columns=['subject'])
+                            print(
+                                f"Data lengths difference after cleaning for {subject1}_{night}: {len(df_PSG)-len(df_Oura)}")
+                #             print(
+                #                 f"Data lengths difference for {subject1}_{night}: {data_difference}")
+                # # write the current line to the file with a newline character
 
-                        #epochs = np.arange(len(df_PSG))+1
-                        combined_data['epoch'] = np.arange(len(df_PSG))+1
-                        combined_data['reference'] = df_PSG
-                        combined_data['device'] = df_Oura
+                            combined_data = pd.DataFrame(
+                                data=[subject1]*len(df_PSG), columns=['subject'])
 
-                        # combined_data_AllDays = pd.concat(combined_data_AllDays,combined_data)
-                        combined_data_AllDays = pd.concat(
-                            [combined_data_AllDays, combined_data], ignore_index=True)
+                            #epochs = np.arange(len(df_PSG))+1
+                            combined_data['epoch'] = np.arange(len(df_PSG))+1
+                            combined_data['reference'] = df_PSG
+                            combined_data['device'] = df_Oura
 
-            # combined_data_AllDays.to_csv(os.path.join(Saving_file_path,
-            #                                           f"combined_data_{Night}_{hand}.csv"), index=False)
+                            # combined_data_AllDays = pd.concat(combined_data_AllDays,combined_data)
+                            combined_data_AllDays = pd.concat(
+                                [combined_data_AllDays, combined_data], ignore_index=True)
+
+            combined_data_AllDays.to_csv(os.path.join(Saving_file_path,
+                                                      f"combined_data_{Night}_{hand}_{today}.csv"), index=False)

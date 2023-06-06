@@ -1,7 +1,6 @@
 #source("/Users/cnladmin/Desktop/DeZambottidata/ebe2sleep.R")
-data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/May_10_2023";
-#setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3")
-setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/May_10_2023")
+data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB/Data";
+setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB")
 library(reshape2); library(ggplot2)
 library(boot)
 library(PropCIs)
@@ -18,18 +17,17 @@ fi<-list.files(path = my_path, pattern = "*.R", all.files = FALSE,
 
 for (f in fi) { source(f) }
 
-ylim_TST=c(-60,130);xlim_TST=c(290,490)
-ylim_WASO=c(-70,85);xlim_WASO=c(5,125)
+
+ylim_TST=c(-170,170);xlim_TST=c(220,550)
+ylim_WASO=c(-120,120);xlim_WASO=c(0,120)
 ylim_Deep=c(-70,70);xlim_Deep=c(20,150)
 ylim_Light=c(-200,200);xlim_Light=c(120,360)
 ylim_REM=c(-110,110);xlim_REM=c(10,170)
-ylim_SOL=c(-100,70);xlim_SOL=c(0,110)
-ylim_SE=c(-15,25);xlim_SE=c(60,100)
+ylim_SOL=c(-110,200);xlim_SOL=c(0,125)
+ylim_SE=c(-50,50);xlim_SE=c(50,100)
 
 
-
-hand=c("R","L")
-Day=c("N01","N02")
+Day=c("N1","N2")
 
 fi_data <- list.files(path = data_dir)
 
@@ -45,9 +43,7 @@ for (f in fi_data) {
   (sleep.data <- ebe2sleep(data = raw.data, idCol = "subject", RefCol = "reference", deviceCol = "device",
                            epochLenght = 30, staging = TRUE, stages = c(wake = 0, light = 1, deep = 3, REM = 5), digits = 2))
   
-  fi_name <-gsub("combined_data","Individual_Sleep_Measurement" , f)
-  #fi_name  <- "Individual_Bias_Day1_L.csv"
-  write.csv(sleep.data , fi_name)
+  
   
   ############################################################################################################################
   
@@ -60,35 +56,35 @@ for (f in fi_data) {
   ###########################################################################################################################
   
   Group_Bias<-rbind(groupDiscr(data = sleep.data, measures=c("TST_device","TST_ref"), size="reference", 
-                   CI.type="boot", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("SE_device","SE_ref"), size="reference", 
-                   CI.type="boot", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("SOL_device","SOL_ref"), size="reference", 
-                   CI.type="boot", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("WASO_device","WASO_ref"), size="reference", 
-                   CI.type="boot", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("Light_device","Light_ref"), size="reference", 
-                   CI.type="boot", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("Deep_device","Deep_ref"), size="reference", 
-                   CI.type="boot", CI.level=.95, digits=2),
-        
-        # bootstrapped CI on log-transformed data
-        groupDiscr(data = sleep.data, measures=c("REM_device","REM_ref"), size = "reference", logTransf = TRUE, 
-                   CI.type="boot", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("LightPerc_device","LightPerc_ref"), size = "reference", logTransf = TRUE, 
-                   CI.type="boot",boot.type="basic",CI.level=.95, digits=2),
-        
-        # classic CI on log-transformed data
-        groupDiscr(data = sleep.data, measures=c("DeepPerc_device","DeepPerc_ref"), size  ="reference", logTransf = TRUE, 
-                   CI.type="classic", boot.type="basic", CI.level=.95, digits=2),
-        groupDiscr(data = sleep.data, measures=c("REMPerc_device","REMPerc_ref"), size="reference", logTransf = TRUE, 
-                   CI.type="classic",boot.type="basic",CI.level=.95, digits=2))
+                               CI.type="boot", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("SE_device","SE_ref"), size="reference", 
+                               CI.type="boot", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("SOL_device","SOL_ref"), size="reference", 
+                               CI.type="boot", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("WASO_device","WASO_ref"), size="reference", 
+                               CI.type="boot", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("Light_device","Light_ref"), size="reference", 
+                               CI.type="boot", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("Deep_device","Deep_ref"), size="reference", 
+                               CI.type="boot", CI.level=.95, digits=2),
+                    
+                    # bootstrapped CI on log-transformed data
+                    groupDiscr(data = sleep.data, measures=c("REM_device","REM_ref"), size = "reference", logTransf = TRUE, 
+                               CI.type="boot", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("LightPerc_device","LightPerc_ref"), size = "reference", logTransf = TRUE, 
+                               CI.type="boot",boot.type="basic",CI.level=.95, digits=2),
+                    
+                    # classic CI on log-transformed data
+                    groupDiscr(data = sleep.data, measures=c("DeepPerc_device","DeepPerc_ref"), size  ="reference", logTransf = TRUE, 
+                               CI.type="classic", boot.type="basic", CI.level=.95, digits=2),
+                    groupDiscr(data = sleep.data, measures=c("REMPerc_device","REMPerc_ref"), size="reference", logTransf = TRUE, 
+                               CI.type="classic",boot.type="basic",CI.level=.95, digits=2))
   
   fi_name <-gsub("combined_data","Group_Bias" , f)
   write.csv(Group_Bias, fi_name)
   ############################################################################################################################
   
-  plot_name<-"TST_Oura3_PSG_BA.png"
+  plot_name<-"TST_FB_PSG_BA.png"
   
   plot_name <- tools::file_path_sans_ext(plot_name)
   
@@ -102,7 +98,7 @@ for (f in fi_data) {
   
   png(file= plot_name, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("TST_device","TST_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_TST,xlim=xlim_TST)
+                 xaxis="mean", CI.type="classic", CI.level=.95, xlim=xlim_TST,ylim=ylim_TST)
   
   print(myplot)
   dev.off()
@@ -110,21 +106,21 @@ for (f in fi_data) {
   plot_name_f<-gsub("TST","SE" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("SE_device","SE_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_SE,xlim=xlim_SE)
+                 xaxis="mean", CI.type="classic", CI.level=.95,xlim=xlim_SE,ylim=ylim_SE)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","SOL" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("SOL_device","SOL_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_SOL,xlim=xlim_SOL)
+                 xaxis="mean", CI.type="classic", CI.level=.95,xlim=xlim_SOL,ylim=ylim_SOL)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","WASO" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("WASO_device","WASO_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_WASO,xlim=xlim_WASO)
+                 xaxis="mean", CI.type="classic", CI.level=.95,xlim=xlim_WASO,ylim=ylim_WASO)
   print(myplot)
   dev.off()
   
@@ -132,21 +128,21 @@ for (f in fi_data) {
   plot_name_f<-gsub("TST","Light" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("Light_device","Light_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_Light)
+                 xaxis="mean", CI.type="classic", CI.level=.95,ylim=ylim_Light,xlim=xlim_Light)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","Deep" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("Deep_device","Deep_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_Deep)
+                 xaxis="mean", CI.type="classic", CI.level=.95,ylim=ylim_Deep,xlim=xlim_Deep)
   print(myplot)
   dev.off()
   
   plot_name_f<-gsub("TST","REM" , plot_name)
   png(file= plot_name_f, width=6, height=4, units="in", res=2000)
   myplot<-BAplot(data=sleep.data,measures=c("REM_device","REM_ref"), logTransf = FALSE,
-                 xaxis="reference", CI.type="classic", CI.level=.95,ylim=ylim_REM)
+                 xaxis="mean", CI.type="classic", CI.level=.95,ylim=ylim_REM,xlim=xlim_REM)
   
   print(myplot)
   dev.off()
@@ -167,10 +163,10 @@ for (f in fi_data) {
                 indEBE(data = raw.data, stage = 3, stageLabel = "deep", doPlot = FALSE, digits = 2)[,2:4],
                 indEBE(data = raw.data, stage = 5, stageLabel = "REM", doPlot = FALSE, digits = 2)[,2:4]))
   
-  #fi_name  <- "EBE_individual_Day1_L.csv"
+  #fi_name  <- "EBE_Individual_Day1_L.csv"
   fi_name <-gsub("combined_data","EBE_individual" , f)
   write.csv(ebe, fi_name)
-
+  
   ###########################################################################################################
   
   library(reshape2); library(ggplot2)
@@ -183,8 +179,10 @@ for (f in fi_data) {
     theme(legend.position = "none")
   
   #plot_name <- "Fourstage_Specificity_Day1_L.png"
-  plot_name  <-gsub("REM_Oura3_PSG_BA","Fourstage_Sensitivity" , plot_name_f)
+  plot_name  <-gsub("REM_FB_PSG_BA","Fourstage_Sensitivity" , plot_name_f)
   ggsave(plot_name)
+  
+  
   
   
   
@@ -195,7 +193,7 @@ for (f in fi_data) {
     geom_point(aes(col=variable),position = position_jitter(width = .15), size = 2) + 
     theme(legend.position = "none")
   
-  plot_name  <-gsub("REM_Oura3_PSG_BA","Fourstage_Specificity" , plot_name_f)
+  plot_name  <-gsub("REM_FB_PSG_BA","Fourstage_Specificity" , plot_name_f)
   ggsave(plot_name)
   
   
@@ -210,7 +208,8 @@ for (f in fi_data) {
   #fi_name  <- "EBE_Group_Day1_L.csv"
   fi_name <-gsub("combined_data","EBE_Group" , f)
   write.csv(EBE_metric, fi_name)
-
+  
+  
   ###########################################################################################################
   
   Result<-rbind(groupEBE(data=raw.data,stage=0,stageLabel="wake",metricsType="avg",CI.type="boot",advancedMetrics=TRUE),
@@ -222,8 +221,11 @@ for (f in fi_data) {
   #fi_name  <- "Advanced_4stage_Day1_L.csv"
   fi_name <-gsub("combined_data","Advanced_4stage" , f)
   write.csv(Result, fi_name)
-
+  
+  
+  
   ###########################################################################################################
+  
   # dichotomic recoding of raw dataset
   dic.data <- raw.data
   dic.data[dic.data$reference!=0,"reference"] = 5 # 5 when sleep
@@ -238,19 +240,6 @@ for (f in fi_data) {
   #fi_name  <- "Slep-wake-EBE_Day1_L.csv"
   fi_name <-gsub("combined_data","EBE-Sleep-Wake" , f)
   write.csv(Result, fi_name)
-  
-  
-  
-  errorMatrix(data = dic.data, idCol = "subject", RefCol = "reference", deviceCol = "device",
-              staging = FALSE, stages = c(wake = 10, sleep = 5), matrixType = "sum",
-              CI.type = "classic", boot.type = "basic", CI.level = .95, digits = 2)
-  
-  
- 
-  
-  fi_name <-gsub("combined_data","ErrorMatrix_propertional_SleepWake" , f)
-  write.csv( ERRMTRIX, fi_name)
-  
   
   
 }

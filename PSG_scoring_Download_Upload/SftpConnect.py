@@ -22,8 +22,9 @@ psg_files = os.listdir(psg_dir)
 #psg_files = glob.glob(psg_dir+'/*.edf')
 print(psg_files)
 
-
+count = 0
 for file in psg_files:
+    count = count+1
     if file not in existing_files and file.endswith('.edf'):
         local_path = os.path.join(psg_dir, file)
         remote_path = os.path.join('/input', file)
@@ -33,6 +34,7 @@ for file in psg_files:
 # Close the SFTP connection
 
 print("Finished Uploading :)")
+print(count)
 
 
 # Download Scored  files from Siesta

@@ -54,7 +54,7 @@ for Night in nights:
     # /Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/SubjectID_N01_L_2023_05_10.csv
     Night_oura = Night.replace('N', 'N0')
     subj_list = pd.read_csv(
-        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/SubjectID_{Night_oura}_L_2023_05_10.csv')
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/SubjectID_{Night_oura}_L_2023_06_13.csv')
     # Consesnus_Scores = glob.glob(os.path.join(
     #     staging_file_path, "Consensus_score", f"NUS*{Night}*.csv"))
 

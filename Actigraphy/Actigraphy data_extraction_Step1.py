@@ -3,7 +3,7 @@ import numpy as np
 import csv
 import glob as glob
 
-file = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Actigraph/CSV/NUS3001/NUS3001_gt3x_epochs.csv'
+# file = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Actigraph/CSV/NUS3001/NUS3001_gt3x_epochs.csv'
 
 
 dir_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Actigraph/CSV"

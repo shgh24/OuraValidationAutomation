@@ -23,12 +23,24 @@ sheet_key = contents[0]
 sheet_name = 'Devices/Session Tracking'
 # Read the data from the Google Sheet
 sheet = client.open_by_key(sheet_key).worksheet(sheet_name)
-#data = sheet.get_all_values()
+
 data = sheet.get_all_records()
 
 # Convert the data to a pandas DataFrame
-df = pd.DataFrame(data)
-# print(df)
+
+df1 = pd.DataFrame(data)
+
+# add subject 3101 to the df structure
+sheet_name2 = 'NUS Onsite Dry-Run Data'
+# Read the data from the Google Sheet
+sheet2 = client.open_by_key(sheet_key).worksheet(sheet_name2)
+data2 = sheet2.get_all_records()
+
+df2 = pd.DataFrame(data2)
+
+
+df = pd.concat([df1, df2])
+
 
 data_dir = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/OURA3_Raw'
 filelist = glob.glob(data_dir+'/NUS*_nssa.csv')

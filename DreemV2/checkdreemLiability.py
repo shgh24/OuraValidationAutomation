@@ -20,8 +20,8 @@ import os as os
 # Basically 3010n1, 3020n2 and 3030n1 psg terminated before lights on.
 # For 3010 and 3020 subject was already awake so we can append wake to end of psg record.
 # For 3030 subject was still sleeping so if we are doing any wake time estimation detection, nd to skip this.
-outliers = ['3010', '3020']
-exlusion = ['3030']
+# outliers = ['3010', '3020']
+# exlusion = ['3030']
 count = 0
 
 

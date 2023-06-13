@@ -58,7 +58,7 @@ for files in txt_files:
 
         dt = datetime.strptime(f"{date_str}T{time_str}", "%Y-%m-%dT%H-%M-%S")
         # if the time is before 8 a.m., subtract one day from the date
-        if dt.hour > 18:
+        if dt.hour >= 18:
             dt = dt + timedelta(days=1)
 
         # format the new date and time as strings
@@ -94,7 +94,7 @@ for files in txt_files:
         base_date = pd.Timestamp(session_End_date)
         rounded_times = rounded_timedeltas.apply(
             lambda td: base_date - pd.Timedelta(days=1) + td
-            if td.components.hours > 18
+            if td.components.hours >= 18
             else base_date + td
         )
         time = rounded_times
@@ -102,7 +102,7 @@ for files in txt_files:
         df_dreem["Time [hh:mm:ss]"] = rounded_times
         # Convert lightOff and lightON to datetime objects
         lightOff = pd.Timestamp(lightOff)
-        if lightOff.hour > 18:
+        if lightOff.hour >= 18:
             lightOff_day = base_date - pd.Timedelta(days=1)
             lightOff = lightOff.replace(
                 year=lightOff_day.year,

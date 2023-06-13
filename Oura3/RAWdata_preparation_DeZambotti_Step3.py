@@ -22,6 +22,7 @@ from datetime import datetime
 # Basically 3010n1, 3020n2 and 3030n1 psg terminated before lights on.
 # For 3010 and 3020 subject was already awake so we can append wake to end of psg record.
 # For 3030 subject was still sleeping so if we are doing any wake time estimation detection, nd to skip this.
+# For NUS3101_N2 Signal flatline at 0748 ish. Lights on at 0800. Flatline during peri-sleep task. Wake at 0739.
 
 
 # These dta points has issues
@@ -29,10 +30,14 @@ from datetime import datetime
 # Data cut according to epoch sizes(21: 39pm exact start) on online recording. Full data extracted on PSG device(offline recording).
 # Epoch data contains all data. Take not in DOMINO light backup, NUS3043_N2_F contains the full data while NUS3043_N2_O does not.
 
+
 outliers_cut_end = ['NUS3010_N1', 'NUS3020_N2']
-outlier_cut_start = ['NUS3043_N1']
-# outlier_cut_start = ['NUS3015_N1']
-outlier = ['NUS3021_N1', 'NUS3007_N1', 'NUS3001_N2']
+outlier_cut_start = []
+
+# Subject NUS3001 has participated in study twice because the first time recording was spoiled (NUS3101 is the new recording ID in his second attempt)
+# Subject 3035 dropped out after first time recording N1
+outlier = ['NUS3001_N1', 'NUS3035_N1', 'NUS3001_N2']
+# outlier = ['NUS3021_N1', 'NUS3007_N1', 'NUS3001_N2']
 
 today = datetime.now().strftime("%Y_%m_%d")
 
@@ -91,8 +96,8 @@ with open(filename, "a") as f:  # open the file in append mode
 
                         # print(
                         #     f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_Oura)}")
-                        # f.write(
-                        #     f"Data lengths difference for {subject1}_{night}:  {len(df_PSG)-len(df_Oura)}\n")
+                        f.write(
+                            f"Data lengths difference for {subject1}_{night}:  {len(df_PSG)-len(df_Oura)}\n")
 
                         # Sanity check
                         # Check if the data lengths are the same
@@ -125,8 +130,7 @@ with open(filename, "a") as f:  # open the file in append mode
 
                             print(
                                 f"Data lengths difference after cleaning for {subject1}_{night}: {len(df_PSG)-len(df_Oura)}")
-                #             print(
-                #                 f"Data lengths difference for {subject1}_{night}: {data_difference}")
+
                 # # write the current line to the file with a newline character
 
                             combined_data = pd.DataFrame(

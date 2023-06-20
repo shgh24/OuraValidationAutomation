@@ -131,6 +131,6 @@ for Night in nights:
                 #             f"Data lengths difference for {subject1}_{night} has more than 20% of outliers ")
 
     combined_data_AllDays.to_csv(os.path.join(Saving_file_path,
-                                              f"combined_data_{Night}.csv"), index=False)
+                                              f"combined_data_NEW_{Night}.csv"), index=False)
 # l en_diff.to_csv(os.path.join(Saving_file_path,
 #                              f'DataLength.csv'), index=False)

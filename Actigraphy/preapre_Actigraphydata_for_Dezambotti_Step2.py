@@ -20,8 +20,8 @@ import os as os
 # Basically 3010n1, 3020n2 and 3030n1 psg terminated before lights on.
 # For 3010 and 3020 subject was already awake so we can append wake to end of psg record.
 # For 3030 subject was still sleeping so if we are doing any wake time estimation detection, nd to skip this.
-add_wake = ['3010_N1', '3020_N2']
-exlusion = ['3022_N2']
+# add_wake = ['3010_N1', '3020_N2']
+# exlusion = ['3022_N2']
 
 
 # Recording ID

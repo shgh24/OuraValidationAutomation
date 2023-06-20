@@ -13,6 +13,7 @@ subj_N2_All = pd.read_excel(file, sheet_name='N2')
 print('done')
 
 devices = ['FB', 'Dreem', 'Oura3', 'Acti']
+devices = ['Acti']
 # Saving_file_path = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Common_Subj_N1'
 #
 for devi in devices:

@@ -36,7 +36,7 @@ Day=c("N01","N02")
 device <- c("FB", "Dreem", "Oura3")  # Vector of strings
 
 for (name in device) {
-  data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Dreem/Common_Subj_N1_Nodreem"
+  data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/XXX/Common_Subj_N1_Nodreem"
   #/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Dreem/Common_Subj_N1
   data_dir<- gsub("Dreem", name, data_dir)
   working_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Dreem/results/Common_Subj_N1_Nodreem"

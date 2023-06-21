@@ -34,8 +34,8 @@ import os as os
 # NUS3040_N1  935   936
 
 
-staging_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging"
-Saving_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Data"
+# staging_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging"
+Saving_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Data/June_20_2023"
 # FB_data="/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Fitbit/NUS3001_N1.csv"
 acti = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Actigraphy/epoched/'
 # 'NUS3001_2-3-2023_N1_Actigraphy.csv'
@@ -46,7 +46,7 @@ nights = ["N1", "N2"]
 
 
 outliers_cut_end = ['NUS3010_N1', 'NUS3020_N2']
-outlier_cut_start = ['NUS3043_N1']
+outlier_cut_start = ['NUS3043_N1', 'NUS3021_N1']
 
 
 for Night in nights:
@@ -80,19 +80,29 @@ for Night in nights:
             df_PSG = pd.read_csv(PSG_data[0])
             df_Oura = pd.read_csv(Acti_data[0])
 
-            # print(
-            #     f"Data lengths difference for {subject1}_{night}: {len(df_PSG)-len(df_FB)}")
+            print(
+                f"Data lengths difference for {subj}_{Night}: {len(df_PSG)-len(df_Oura)}")
             # data_type = df_FB['0'].unique()
             # print(
             #     f"Data type for {subject1}_{night}: {data_type}")
-            if len(df_PSG) >= len(df_Oura):
-                df_PSG = df_PSG[0:len(df_Oura)]
 
-            elif len(df_PSG) < len(df_Oura) and subj in outlier_cut_start:
+            subject_night = f"{subj}_{Night}"
+            if len(df_PSG) >= len(df_Oura):
+                if subject_night in outlier_cut_start:
+                    start_ind1 = len(df_PSG)-len(df_Oura)
+                    df_PSG = df_PSG[start_ind1:]
+                else:
+                    df_PSG = df_PSG[0:len(df_Oura)]
+
+            elif len(df_PSG) < len(df_Oura) and subject_night in outlier_cut_start:
+                print(
+                    f"PSG DATA SHORTER {subj}_{Night}: {len(df_PSG)-len(df_Oura)}")
                 start_ind = len(df_Oura)-len(df_PSG)
                 df_Oura = df_Oura[start_ind:]
             else:
                 df_Oura = df_Oura[0:len(df_PSG)]
+                print(
+                    f"ACTI  DATA SHORTER {subj}_{Night}: {len(df_PSG)-len(df_Oura)}")
 
             df_PSG.replace(2, 1, inplace=True)
             df_PSG.replace(3, 1, inplace=True)
@@ -114,7 +124,7 @@ for Night in nights:
             df_Oura.reset_index(drop=True, inplace=True)
 
             print(
-                f"Data lengths difference for {subj}_{Night}: {len(df_PSG)-len(df_Oura)}")
+                f"AFTER DATA cut and impute Data lengths difference for {subj}_{Night}: {len(df_PSG)-len(df_Oura)}")
 
             combined_data = pd.DataFrame(
                 data=[subj]*len(df_PSG), columns=['subject'])

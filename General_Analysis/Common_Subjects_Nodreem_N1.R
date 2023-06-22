@@ -18,13 +18,13 @@ fi<-list.files(path = my_path, pattern = "*.R", all.files = FALSE,
 
 for (f in fi) { source(f) }
 
-ylim_TST=c(-60,130);xlim_TST=c(290,490)
-ylim_WASO=c(-70,85);xlim_WASO=c(5,125)
-ylim_Deep=c(-70,70);xlim_Deep=c(20,150)
-ylim_Light=c(-200,200);xlim_Light=c(120,360)
-ylim_REM=c(-110,110);xlim_REM=c(10,170)
-ylim_SOL=c(-100,70);xlim_SOL=c(0,110)
-ylim_SE=c(-15,25);xlim_SE=c(60,100)
+ylim_TST=c(-100,250);xlim_TST=c(-100,250)
+ylim_WASO=c(-250,100);xlim_WASO=c(5,125)
+ylim_Deep=c(-100,150);xlim_Deep=c(20,150)
+ylim_Light=c(-100,200);xlim_Light=c(120,360)
+ylim_REM=c(-100,100);xlim_REM=c(10,170)
+ylim_SOL=c(-100,150);xlim_SOL=c(0,110)
+ylim_SE=c(-50,50);xlim_SE=c(60,100)
 
 #plot_name<-"TST_Oura3_PSG_BA.png"
 
@@ -33,7 +33,7 @@ Day=c("N01","N02")
 
 
 
-device <- c("FB", "Dreem", "Oura3")  # Vector of strings
+device <- c("FB", "Oura3")  # Vector of strings
 
 for (name in device) {
   data_dir<-"/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Dreem/Common_Subj_N1_Nodreem"

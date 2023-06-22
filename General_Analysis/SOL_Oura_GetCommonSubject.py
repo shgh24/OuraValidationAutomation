@@ -13,13 +13,14 @@ subj_N2_All = pd.read_excel(file, sheet_name='N2')
 print('done')
 
 # devices = ['FB', 'Dreem', 'Oura3', 'Acti']
-# devices = ['Acti']
+devices = ['Oura3']
 # Saving_file_path = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Common_Subj_N1'
 #
 for devi in devices:
     # Get the Oura subjects in each night and Hand
     # data_dir = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Data/June_20_2023'
     # data_dir = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Data/June_20_2023'
+    data_dir = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/SOL_OURA/'
 
     # /Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Dreem/Common_Subj_N1
     # "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/combined_data_N01_L_2023_05_10.csv"
@@ -30,16 +31,16 @@ for devi in devices:
 
         data = pd.read_csv(files)
         df1 = data
-        df2 = subj_N1_All
-        # df2 = subj_N1_NoDreem
+        # df2 = subj_N1_All
+        df2 = subj_N1_NoDreem
 
         new_df = df1[df1['subject'].isin(df2['ID'])]
 
         # new_df.to_csv(files.replace('Data/June_20_2023',
         #               'Common_Subj_N1_Nodreem'), index=False)
 
-        new_df.to_csv(files.replace('Data/June_20_2023',
-                      'Common_Subj_N1'), index=False)
+        new_df.to_csv(files.replace('SOL_OURA/',
+                      'SOL_OURA/Common_Subj_N1_Nodreem/'), index=False)
 
 
 print('done')

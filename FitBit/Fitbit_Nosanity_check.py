@@ -20,12 +20,12 @@ import os as os
 # Basically 3010n1, 3020n2 and 3030n1 psg terminated before lights on.
 # For 3010 and 3020 subject was already awake so we can append wake to end of psg record.
 # For 3030 subject was still sleeping so if we are doing any wake time estimation detection, nd to skip this.
-outliers = ['3010', '3020']
-exlusion = ['3030']
+# outliers = ['3010', '3020']
+# exlusion = ['3030']
 
 
 staging_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging"
-Saving_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB/Data"
+Saving_file_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB/Data/New"
 # FB_data="/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Fitbit/NUS3001_N1.csv"
 
 
@@ -66,7 +66,7 @@ for Night in nights:
                 print(
                     f"Data type for {subject1}_{night}: {data_type}")
 
-                if len(data_type) == 4 and abs(len(df_PSG)-len(df_FB)) <= 3:
+                if abs(len(df_PSG)-len(df_FB)) <= 1600:
                     # Sanity check
                     # Check if the data lengths are the same
                     if len(df_PSG) >= len(df_FB):

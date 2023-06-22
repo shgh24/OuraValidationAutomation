@@ -18,14 +18,31 @@ client = gspread.authorize(creds)
 with open('/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/GoogleSheet_api_key/sheet_key.txt') as f:
     contents = f.readlines()
 sheet_key = contents[0]
+
+################################################################
 sheet_name = 'Devices/Session Tracking'
 # Read the data from the Google Sheet
 sheet = client.open_by_key(sheet_key).worksheet(sheet_name)
-# data = sheet.get_all_values()
+
 data = sheet.get_all_records()
 
 # Convert the data to a pandas DataFrame
-df = pd.DataFrame(data)
+
+df1 = pd.DataFrame(data)
+
+# add subject 3101 to the df structure
+sheet_name2 = 'NUS Onsite Dry-Run Data'
+# Read the data from the Google Sheet
+sheet2 = client.open_by_key(sheet_key).worksheet(sheet_name2)
+data2 = sheet2.get_all_records()
+
+df2 = pd.DataFrame(data2)
+
+
+df = pd.concat([df1, df2])
+
+################################################################
+
 
 folders = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Dreem_Raw/"
 dir_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Dreem_Raw'
@@ -35,12 +52,13 @@ dir_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Ou
 
 # for files in glob.glob(f'{folders}*txt'):
 txt_files = [file for file in os.listdir(folders) if file.endswith('.txt')]
+# txt_files = ['NUS3003_N1_2023-03-09T23-30-56.txt']
 
 for files in txt_files:
     # extract the recording ID
     # NUS3001_N1.txt
     parts = files.split("_")
-    id_str = parts[0].replace('3', '3_')
+    id_str = parts[0].replace('NUS3', 'NUS3_')
 
     date_str = parts[2][:10]
     time_str = parts[2][11:19]
@@ -91,12 +109,23 @@ for files in txt_files:
         )
 
         # session_End_date = match_id.iloc[0]["Session end date"]
+        # Base date is the session end date which is not the same for participant even for 2 nights a row
         base_date = pd.Timestamp(session_End_date)
+        # rounded_times = rounded_timedeltas.apply(
+        #     lambda td: base_date - pd.Timedelta(days=1) + td
+        #     if td.components.hours >= 18
+        #     elif td.components.hours==0
+        #     base_date
+        #     else base_date + td
+        # )
+
         rounded_times = rounded_timedeltas.apply(
             lambda td: base_date - pd.Timedelta(days=1) + td
             if td.components.hours >= 18
+            else base_date if td.components.hours == 0 and td.components.seconds == 0 and td.components.minutes == 0
             else base_date + td
         )
+
         time = rounded_times
 
         df_dreem["Time [hh:mm:ss]"] = rounded_times

@@ -10,7 +10,7 @@ dir_path = "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Ou
 saving_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Actigraphy/Raw'
 
 # folders = next(os.walk(dir_path))[1]
-folders = glob.glob(dir_path+'/NUS*/NUS*.csv')
+folders = glob.glob(dir_path+'/NUS*/NUS*epochs.csv')
 # 2023-03-09T23-30-56_19cfb704-83e3-40af-92d2-75fa740027d2
 # iterate over all folders in the directory
 for folder in folders:

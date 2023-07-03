@@ -13,20 +13,19 @@ subj_N2_All = pd.read_excel(file, sheet_name='N2')
 print('done')
 
 # devices = ['FB', 'Dreem', 'Oura3', 'Acti']
-devices = ['FB']
+devices = ['Oura3']
 # Saving_file_path = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Common_Subj_N1'
 # Saving_file_path = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devices}/Data/SOL_FB/Data'
 #
 for devi in devices:
     # Get the Oura subjects in each night and Hand
-    # data_dir = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Data/June_20_2023'
-    # data_dir = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Data/June_20_2023'
-    # data_dir = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Data/SOL/Data'
-    data_dir = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Data/SOL/Data'
-    # /Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Dreem/Common_Subj_N1
-    # "/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/combined_data_N01_L_2023_05_10.csv"
-    fi = glob.glob(data_dir + '/combined*N1*.csv')
-    # Subjects = pd.DataFrame()
+
+    data_dir = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Data/DeviceOnly'
+    data_dir = f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/{devi}/Data/DeviceOnly'
+    # /Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/Data/DeviceOnly/Common_Subj_N1_Nodreem
+
+    fi = glob.glob(data_dir + '/combined*N01*.csv')
+
     for files in fi:
         Subjects = pd.DataFrame()
 
@@ -43,8 +42,8 @@ for devi in devices:
         # new_df.to_csv(files.replace('Data/June_20_2023',
         #               'Common_Subj_N1'), index=False)
 
-        new_df.to_csv(files.replace('SOL/Data',
-                                    'SOL/Common_Subj_N1_Nodreem'), index=False)
+        new_df.to_csv(files.replace('DeviceOnly/',
+                                    'DeviceOnly/Common_Subj_N1_Nodreem'), index=False)
 
 
 print('done')

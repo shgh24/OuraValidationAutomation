@@ -32,9 +32,10 @@ nights = ["N1"]
 for Night in nights:
 
     FB_data = glob.glob(os.path.join(
-        staging_file_path, "Fitbit", "DeviceOnly", "NUS*.csv"))
+        staging_file_path, "Fitbit", "DeviceOnly", "NUS*N1*.csv"))
     combined_data_AllDays = pd.DataFrame()
     for FB_Scores in FB_data:
+        df_FB = []
         # Extract the subject number and night from the file name
         subject1, night = os.path.splitext(os.path.basename(FB_Scores))[
             0].split("_")[0:2]

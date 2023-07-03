@@ -1,7 +1,4 @@
-#source("/Users/cnladmin/Desktop/DeZambottidata/ebe2sleep.R")
 
-#setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3")
-#setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/June_13_2023")
 library(reshape2); library(ggplot2)
 library(boot)
 library(PropCIs)

@@ -96,62 +96,76 @@ for files in filelist:
 
     df_Oura['predicted'] = df_Oura['predicted'].map(OuraMapping)
 
-    A1 = df_Oura['timestamp'][0]
-    B1 = lightOff
+    A = df_Oura['timestamp'][0]
+    B = lightOff
 
-    hour = int(A1.strftime('%H'))
-    minutes = int(A1.strftime('%M'))
-    seconds = int(A1.strftime('%S'))
-    if hour < 18:
-        hour = 24+hour
-    hour_in_seconds_A1 = int(hour) * 3600 + int(minutes) * 60 + int(seconds)
-    if hour < 18:
-        hour = 24+hour
-    hour = int(B1.strftime('%H'))
-    minutes = int(B1.strftime('%M'))
-    seconds = int(B1.strftime('%S'))
+    hour = int(A.strftime('%H'))
+    minutes = int(A.strftime('%M'))
+    seconds = int(A.strftime('%S'))
+    hour_in_seconds_A1 = int(hour) * 60 + int(minutes) + int(seconds)/60
 
-    hour_in_seconds_B1 = int(hour) * 3600 + int(minutes) * 60 + int(seconds)
+    if hour > 18:
+        hr = -24*60
+
+        hour_in_seconds_A1 = hour_in_seconds_A1+hr
+
+    hour = int(B.strftime('%H'))
+    minutes = int(B.strftime('%M'))
+    seconds = int(B.strftime('%S'))
+    hour_in_seconds_B1 = int(hour) * 60 + int(minutes) + int(seconds)/60
+
+    if hour > 18:
+        hr = -24*60
+
+        hour_in_seconds_B1 = hour_in_seconds_B1+hr
 
     diff = hour_in_seconds_A1-hour_in_seconds_B1
     print(
-        f"Bedtime start difference Based on Seconds  {subj}  NIGHT {night}    {diff/60} minutes            OURA {A1 }  and  PSG {B1}")
+        f"Bedtime start difference Based on Seconds  {subj}  NIGHT {night}    {diff} minutes            OURA {A }  and  PSG {B}")
 
     # Calculate the time difference and include the sign
-    time_diff = A1 - B1
+    time_diff = A - B
     diff_seconds1 = time_diff.total_seconds()
 
     # difference of Lights ON and Oura start of recording
     BedtimeStart_difference = diff_seconds1
 
     print(
-        f"Bedtime start difference  {subj}  NIGHT {night}    {diff_seconds1/60} minutes            OURA {A1 }  and  PSG {B1}")
+        f"Bedtime start difference  {subj}  NIGHT {night}    {diff_seconds1/60} minutes            OURA {A }  and  PSG {B}")
 
     # A2 = df_Oura['timestamp'][len(df_Oura)-1]
-    A2 = df_Oura['timestamp'].iloc[-1]
-    B2 = lightON
+    A = df_Oura['timestamp'].iloc[-1]
+    B = lightON
 
-    hour = int(A2.strftime('%H'))
-    minutes = int(A2.strftime('%M'))
-    seconds = int(A2.strftime('%S'))
-    if hour < 18:
-        hour = 24+hour
-    hour_in_seconds_A2 = int(hour) * 3600 + int(minutes) * 60 + int(seconds)
+    hour = int(A.strftime('%H'))
+    minutes = int(A.strftime('%M'))
+    seconds = int(A.strftime('%S'))
+    hour_in_seconds_A2 = int(hour) * 60 + int(minutes) + int(seconds)/60
 
-    if hour < 18:
-        hour = 24+hour
-    hour = int(B2.strftime('%H'))
-    minutes = int(B2.strftime('%M'))
-    seconds = int(B2.strftime('%S'))
-    hour_in_seconds_B2 = int(hour) * 3600 + int(minutes) * 60 + int(seconds)
+    if hour > 18:
+        hr = -24*60
+
+        hour_in_seconds_A2 = hour_in_seconds_A2+hr
+
+    hour = int(B.strftime('%H'))
+    minutes = int(B.strftime('%M'))
+    seconds = int(B.strftime('%S'))
+    hour_in_seconds_B2 = int(hour) * 60 + int(minutes) + int(seconds)/60
+
+    if hour > 18:
+        hr = -24*60
+
+        hour_in_seconds_B2 = hour_in_seconds_B2+hr
+
+    diff = hour_in_seconds_A2-hour_in_seconds_B2
 
     # Calculate the time difference and include the sign
-    time_diff2 = A2 - B2
+    time_diff2 = A - B
     diff_seconds2 = time_diff2.total_seconds()
 
     BedtimeEnd_difference = diff_seconds2
     print(
-        f"Bedtime end difference    {subj}  NIGHT {night}    {BedtimeEnd_difference/60} minutes            OURA {A2 }  and  PSG {B2}")
+        f"Bedtime end difference    {subj}  NIGHT {night}    {BedtimeEnd_difference} minutes            OURA {A }  and  PSG {B}")
 
     # SOL_Oura = df_Oura[df_Oura['predicted'] != 'WAKE']['timestamp'][0]
     SOL_Oura = df_Oura.loc[df_Oura['predicted']
@@ -178,7 +192,7 @@ for files in filelist:
         })
 
         combined_data_AllDays_diff = combined_data_AllDays_diff.append(
-        gnfbdvscaxZa dra_AllDays_diff.append(
+            combined_data_diff, ignore_index=True
         )
 
         if end_ep_diff < 0:

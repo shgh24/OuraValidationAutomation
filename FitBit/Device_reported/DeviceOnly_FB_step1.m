@@ -6,7 +6,7 @@ clc;clear all;
 addpath('/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/NFS5/Analysis/Fitbit/ProcessSleepJSON')
 PSG_dir='/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Consensus_score/';
 FB_dir='/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Fitbit';
-PSG_Output_dir='/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Fitbit/SOL_Fitbit/PSG/';
+
 FB_Output_dir='/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/Sleep_Staging/Fitbit/DeviceOnly/';
 % NUS3002_v1.2_sleep_2023-03-02_2023-03-04.json
 
@@ -49,12 +49,9 @@ for i=1:size(scoring_list,1)
      end
      
   %%   
-     
-%      PSG_File=NUS3001_N1_030323_sleepstage_consensus.csv
 
 
-       PSG_data = readtable(fullfile(PSG_dir,PSG_list(PSG_id).name));
-       PSG_data = table2array(PSG_data );
+
      
         % Split the input string into pairs of characters
         
@@ -118,8 +115,7 @@ for i=1:size(scoring_list,1)
 
         if ~isempty(ind) 
 
-            outdir = fullfile(PSG_Output_dir);                       
-            if (~exist(outdir, 'dir')); mkdir(outdir); end
+            
             if ~any(strcmp({jsondata(ind).levels.data.level }, 'restless'))
 
             [curr_epoch curr_timestamp] = ConvertToEpochs(jsondata(ind).levels);
@@ -127,7 +123,7 @@ for i=1:size(scoring_list,1)
 
             DIFF=length(curr_epoch)-length(curr_timestamp);
             epochs_stages = cat(2, curr_timestamp, curr_epoch(1:end-DIFF)); 
-            base_path_PSG = outdir;
+           
 %             fname = [scoring_list(i).name  '_N' num2str(night) '.mat'];
             [FB_data] =Oura_epoch_reshap(epochs_stages);
             

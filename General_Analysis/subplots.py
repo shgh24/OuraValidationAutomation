@@ -1,0 +1,95 @@
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+from mpl_toolkits.axes_grid1 import ImageGrid
+
+
+measurements = ["TST", "WASO", "SOL", "SE"]
+for measurement in measurements:
+
+    # Define the file paths to the plots
+    file_paths = [
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_Oura3_PSG_BA_N1_L_2023_06_13.png',
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB/results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_FB_PSG_BA_N1.png',
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Xiaomi/results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_Xiaomi_PSG_BA_N1.png',
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Acti/Results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_Acti_PSG_BA_N1.png'
+    ]
+
+    # Define the folder names corresponding to the plots
+    folder_names = ["Oura3", "FB", "Xiaomi", "Acti"]
+
+    # Create an empty list to store the plot images
+    plot_images = []
+
+    # Load the plot images
+    for file_path in file_paths:
+        img = mpimg.imread(file_path)
+        plot_images.append(img)
+
+    # Set up the figure with the desired size
+    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+    # Iterate over the axes and plot the images
+    for ax, img, folder_name in zip(axes.ravel(), plot_images, folder_names):
+        ax.imshow(img)
+        ax.set_title(folder_name, fontsize=20,
+                     fontname="sans-serif", fontweight="bold")
+        ax.axis('off')  # Turn off the axis
+
+    # Set the title for the combined plot
+    fig.suptitle("Combined Plots")
+
+    # Adjust the spacing between subplots
+    fig.tight_layout()
+
+    # Display the combined plot
+
+    fig.savefig(
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/presentations/Xiaomi/plots/{measurement}.png', dpi=200)
+    print('done')
+    # plt.show()
+
+
+measurements = ["Deep", "Light", "REM"]
+for measurement in measurements:
+
+    # Define the file paths to the plots
+    file_paths = [
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_Oura3_PSG_BA_N1_L_2023_06_13.png',
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/FB/results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_FB_PSG_BA_N1.png',
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Xiaomi/results/withXiaomi/Common_Subj_N1_Nodreem/{measurement}_Xiaomi_PSG_BA_N1.png'
+
+    ]
+
+    # Define the folder names corresponding to the plots
+    folder_names = ["Oura3", "FB", "Xiaomi"]
+
+    # Create an empty list to store the plot images
+    plot_images = []
+
+    # Load the plot images
+    for file_path in file_paths:
+        img = mpimg.imread(file_path)
+        plot_images.append(img)
+
+    # Set up the figure with the desired size
+    fig, axes = plt.subplots(1, 3, figsize=(10, 10))
+
+    # Iterate over the axes and plot the images
+    for ax, img, folder_name in zip(axes.ravel(), plot_images, folder_names):
+        ax.imshow(img)
+        ax.set_title(folder_name, fontsize=20,
+                     fontname="sans-serif", fontweight="bold")
+        ax.axis('off')  # Turn off the axis
+
+    # Set the title for the combined plot
+    fig.suptitle("Combined Plots")
+
+    # Adjust the spacing between subplots
+    fig.tight_layout()
+
+    # Display the combined plot
+
+    fig.savefig(
+        f'/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/presentations/Xiaomi/plots/{measurement}.png', dpi=200)
+    print('done')
+    # plt.show()

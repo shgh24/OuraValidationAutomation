@@ -43,12 +43,12 @@ df2 = pd.DataFrame(data2)
 df = pd.concat([df1, df2])
 
 
-HPB_raw_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/HPB/CSC_sleep_intervals.xlsx'
+HPB_raw_path = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/HPB/CSC_sleep_intervals_JL.xlsx'
 HPB_saving_processed = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/HPB/PSG_Loff_Lonn'
 HPB_saving_RAW = '/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/data_raw/HPB/RAW'
 
 # reading the HPB file
-data = pd.read_excel(HPB_raw_path, sheet_name="N1")
+data = pd.read_excel(HPB_raw_path, sheet_name="HPB_Tracker_N1_classic_removed")
 stages = pd.unique(data["sleepstagecategory"])
 data["stage"] = data["sleepstagecategory"].map({
     'LIGHT':

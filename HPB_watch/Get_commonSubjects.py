@@ -12,7 +12,7 @@ subj_HPB_Nodreem = pd.read_excel(file, sheet_name='HPB_Nodreem')
 print('done')
 
 # devices = ['FB', 'Dreem', 'Oura3', 'Acti']
-devices = ['Oura3', 'FB', 'Acti']
+devices = ['Oura3', 'FB', 'Acti', 'HPB']
 
 for devi in devices:
     # Get the Oura subjects in each night and Hand

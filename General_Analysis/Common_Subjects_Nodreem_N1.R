@@ -1,7 +1,3 @@
-#source("/Users/cnladmin/Desktop/DeZambottidata/ebe2sleep.R")
-
-#setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3")
-#setwd("/Volumes/CSC5/SleepCognitionLab/Tera2b/Experiments/OuraValidation/Oura3/analysis/DeZambotti/Oura3/results/June_13_2023")
 library(reshape2); library(ggplot2)
 library(boot)
 library(PropCIs)
@@ -18,13 +14,27 @@ fi<-list.files(path = my_path, pattern = "*.R", all.files = FALSE,
 
 for (f in fi) { source(f) }
 
+#ylim_TST=c(-100,250);xlim_TST=c(-100,250)
+#ylim_WASO=c(-250,100);xlim_WASO=c(5,125)
+#ylim_Deep=c(-100,150);xlim_Deep=c(20,150)
+#ylim_Light=c(-100,200);xlim_Light=c(120,360)
+#ylim_REM=c(-100,100);xlim_REM=c(10,170)
+#ylim_SOL=c(-100,150);xlim_SOL=c(0,110)
+#ylim_SE=c(-50,50);xlim_SE=c(60,100)
+
+
+
+
 ylim_TST=c(-100,250);xlim_TST=c(-100,250)
-ylim_WASO=c(-250,100);xlim_WASO=c(5,125)
-ylim_Deep=c(-100,150);xlim_Deep=c(20,150)
+ylim_WASO=c(-200,100);xlim_WASO=c(5,125)
+ylim_Deep=c(-100,100);xlim_Deep=c(20,150)
 ylim_Light=c(-100,200);xlim_Light=c(120,360)
-ylim_REM=c(-100,100);xlim_REM=c(10,170)
-ylim_SOL=c(-100,150);xlim_SOL=c(0,110)
-ylim_SE=c(-50,50);xlim_SE=c(60,100)
+ylim_REM=c(-50,100);xlim_REM=c(10,170)
+ylim_SOL=c(-100,150);xlim_SOL=c(0,75)
+ylim_SE=c(-50,75);xlim_SE=c(60,100)
+
+
+
 
 #plot_name<-"TST_Oura3_PSG_BA.png"
 
